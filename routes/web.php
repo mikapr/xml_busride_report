@@ -11,4 +11,4 @@
 |
 */
 
-Route::get('user/profile', 'UserController@showProfile')
+Route::resource('/', 'RideController');
