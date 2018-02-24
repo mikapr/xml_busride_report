@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\BusWork;
+use App\Services\XmlService;
 use Illuminate\Http\Request;
-use File;
 
 class RideController extends Controller
 {
@@ -21,19 +20,7 @@ class RideController extends Controller
 
         $file = $request->file('file');
 
-        $xmlContent = File::get($file);
-
-        $xml = new \SimpleXMLElement($xmlContent);
-
-        $buses = [];
-
-        foreach ($xml->graph as $ride) {
-            $busNum = (int) $ride['num'];
-            if (isset($buses[$busNum]))
-                $buses[$busNum]->addWork($ride);
-            else
-                $buses[$busNum] = new BusWork($busNum, $ride);
-        }
+        $buses = XmlService::parseBusRidesFromXml($file);
 
         return view('report', ['buses' => $buses]);
     }
